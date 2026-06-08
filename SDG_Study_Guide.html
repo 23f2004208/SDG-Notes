@@ -1,0 +1,2505 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SDG Study Guide</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Mono:wght@300;400;500&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #141214;
+    --card: #302F33;
+    --asphalt: #464C55;
+    --whisper: #636D79;
+    --sea-lion: #7F8995;
+    --falls: #9EA7B3;
+    --ash: #C2C7CF;
+    --accent: #5B8FB9;
+    --accent2: #7EC8C8;
+    --glow: rgba(91,143,185,0.15);
+    --border: rgba(159,167,179,0.1);
+    --border2: rgba(159,167,179,0.18);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--ash);
+    font-family: 'DM Mono', monospace;
+    font-size: 14px;
+    line-height: 1.7;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ─── NOISE TEXTURE OVERLAY ─── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.4;
+  }
+
+  /* ─── SIDEBAR NAV ─── */
+  .sidebar {
+    position: fixed;
+    left: 0; top: 0; bottom: 0;
+    width: 260px;
+    background: rgba(48,47,51,0.6);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-right: 1px solid var(--border2);
+    padding: 32px 0;
+    z-index: 100;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .sidebar::-webkit-scrollbar { width: 4px; }
+  .sidebar::-webkit-scrollbar-track { background: transparent; }
+  .sidebar::-webkit-scrollbar-thumb { background: var(--asphalt); border-radius: 2px; }
+
+  .sidebar-logo {
+    padding: 0 24px 28px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 20px;
+  }
+
+  .sidebar-logo span {
+    font-family: 'Syne', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--sea-lion);
+  }
+
+  .sidebar-logo h2 {
+    font-family: 'Syne', sans-serif;
+    font-size: 18px;
+    font-weight: 800;
+    color: var(--ash);
+    line-height: 1.2;
+    margin-top: 4px;
+  }
+
+  .nav-section-label {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--whisper);
+    padding: 8px 24px 6px;
+  }
+
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 24px;
+    color: var(--sea-lion);
+    text-decoration: none;
+    font-size: 12.5px;
+    font-weight: 400;
+    transition: all 0.2s;
+    border-left: 2px solid transparent;
+    cursor: pointer;
+  }
+
+  .nav-item:hover, .nav-item.active {
+    color: var(--ash);
+    background: rgba(91,143,185,0.07);
+    border-left-color: var(--accent);
+  }
+
+  .nav-item .num {
+    font-size: 10px;
+    color: var(--whisper);
+    min-width: 20px;
+    font-weight: 500;
+  }
+
+  /* ─── MAIN CONTENT ─── */
+  .main {
+    margin-left: 260px;
+    padding: 48px 56px;
+    position: relative;
+    z-index: 1;
+    max-width: 1200px;
+  }
+
+  /* ─── HERO ─── */
+  .hero {
+    margin-bottom: 64px;
+    padding-bottom: 48px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .hero-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(91,143,185,0.1);
+    border: 1px solid rgba(91,143,185,0.25);
+    color: var(--accent);
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    padding: 5px 12px;
+    border-radius: 4px;
+    margin-bottom: 20px;
+  }
+
+  .hero h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(36px, 5vw, 64px);
+    font-weight: 800;
+    color: var(--ash);
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+  }
+
+  .hero h1 em {
+    font-style: normal;
+    color: var(--accent);
+  }
+
+  .hero-sub {
+    margin-top: 16px;
+    font-size: 14px;
+    color: var(--sea-lion);
+    max-width: 520px;
+    line-height: 1.8;
+  }
+
+  .hero-stats {
+    display: flex;
+    gap: 32px;
+    margin-top: 32px;
+  }
+
+  .stat {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .stat-num {
+    font-family: 'Syne', sans-serif;
+    font-size: 28px;
+    font-weight: 800;
+    color: var(--ash);
+    letter-spacing: -0.02em;
+  }
+
+  .stat-label {
+    font-size: 11px;
+    color: var(--whisper);
+    letter-spacing: 0.05em;
+  }
+
+  /* ─── MODULE SECTION ─── */
+  .module {
+    margin-bottom: 80px;
+    scroll-margin-top: 40px;
+  }
+
+  .module-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 20px;
+    margin-bottom: 36px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .module-num {
+    font-family: 'Syne', sans-serif;
+    font-size: 72px;
+    font-weight: 800;
+    color: rgba(70,76,85,0.4);
+    line-height: 1;
+    letter-spacing: -0.04em;
+    flex-shrink: 0;
+  }
+
+  .module-title-block { flex: 1; }
+
+  .module-tag {
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--accent);
+    font-weight: 500;
+    margin-bottom: 6px;
+  }
+
+  .module-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 26px;
+    font-weight: 700;
+    color: var(--ash);
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+  }
+
+  /* ─── CARDS ─── */
+  .card {
+    background: rgba(48,47,51,0.5);
+    border: 1px solid var(--border2);
+    border-radius: 12px;
+    padding: 24px;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    box-shadow: 0 4px 24px rgba(0,0,0,0.3);
+    transition: border-color 0.25s, box-shadow 0.25s;
+  }
+
+  .card:hover {
+    border-color: rgba(91,143,185,0.3);
+    box-shadow: 0 8px 40px rgba(0,0,0,0.4), 0 0 0 1px rgba(91,143,185,0.08);
+  }
+
+  .card-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--ash);
+    letter-spacing: 0.01em;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .card-title .dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+    flex-shrink: 0;
+  }
+
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+  .grid-auto { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; }
+
+  /* ─── DEFINITION BLOCK ─── */
+  .definition {
+    background: rgba(70,76,85,0.2);
+    border-left: 3px solid var(--accent);
+    border-radius: 0 8px 8px 0;
+    padding: 18px 20px;
+    margin: 12px 0;
+  }
+
+  .definition p {
+    font-family: 'Instrument Serif', serif;
+    font-size: 16px;
+    color: var(--ash);
+    line-height: 1.65;
+    font-style: italic;
+  }
+
+  .definition .source {
+    font-size: 11px;
+    color: var(--sea-lion);
+    margin-top: 8px;
+    font-style: normal;
+    font-family: 'DM Mono', monospace;
+  }
+
+  /* ─── PILL LIST ─── */
+  .pill-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 12px 0;
+  }
+
+  .pill {
+    background: rgba(70,76,85,0.4);
+    border: 1px solid var(--border2);
+    color: var(--falls);
+    font-size: 11.5px;
+    padding: 4px 12px;
+    border-radius: 20px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .pill.accent {
+    background: rgba(91,143,185,0.12);
+    border-color: rgba(91,143,185,0.3);
+    color: var(--accent);
+  }
+
+  .pill.green {
+    background: rgba(126,200,200,0.1);
+    border-color: rgba(126,200,200,0.25);
+    color: var(--accent2);
+  }
+
+  /* ─── CHECK LIST ─── */
+  .check-list { list-style: none; margin: 10px 0; }
+
+  .check-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 5px 0;
+    color: var(--falls);
+    font-size: 13px;
+  }
+
+  .check-list li::before {
+    content: '✔';
+    color: var(--accent2);
+    font-size: 11px;
+    margin-top: 2px;
+    flex-shrink: 0;
+  }
+
+  /* ─── PROBLEM LIST ─── */
+  .problem-list { list-style: none; margin: 10px 0; }
+
+  .problem-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 5px 0;
+    color: var(--falls);
+    font-size: 13px;
+  }
+
+  .problem-list li::before {
+    content: '→';
+    color: var(--sea-lion);
+    flex-shrink: 0;
+  }
+
+  /* ─── TABLE ─── */
+  .data-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 16px 0;
+    font-size: 12.5px;
+  }
+
+  .data-table th {
+    background: rgba(70,76,85,0.4);
+    color: var(--ash);
+    font-family: 'Syne', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 10px 14px;
+    text-align: left;
+    border-bottom: 1px solid var(--border2);
+  }
+
+  .data-table td {
+    padding: 10px 14px;
+    color: var(--falls);
+    border-bottom: 1px solid rgba(159,167,179,0.06);
+  }
+
+  .data-table tr:hover td { background: rgba(70,76,85,0.15); }
+
+  /* ─── SECTION HEADING ─── */
+  .section-heading {
+    font-family: 'Syne', sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--ash);
+    margin: 36px 0 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .section-heading::before {
+    content: '';
+    display: block;
+    width: 3px;
+    height: 18px;
+    background: linear-gradient(180deg, var(--accent), var(--accent2));
+    border-radius: 2px;
+    flex-shrink: 0;
+  }
+
+  .sub-heading {
+    font-family: 'Syne', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--falls);
+    margin: 20px 0 10px;
+    letter-spacing: 0.02em;
+  }
+
+  /* ─── MINDMAP ─── */
+  .mindmap-wrapper {
+    margin: 32px 0;
+    background: rgba(20,18,20,0.6);
+    border: 1px solid var(--border2);
+    border-radius: 16px;
+    padding: 32px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .mindmap-wrapper::before {
+    content: 'MIND MAP';
+    position: absolute;
+    top: 16px;
+    right: 20px;
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    color: var(--asphalt);
+    font-weight: 500;
+  }
+
+  .mindmap-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--sea-lion);
+    margin-bottom: 24px;
+  }
+
+  .mindmap { display: flex; flex-direction: column; align-items: center; gap: 0; }
+
+  .mm-center {
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    color: #0d1b2a;
+    font-family: 'Syne', sans-serif;
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: 0.05em;
+    padding: 12px 28px;
+    border-radius: 8px;
+    text-align: center;
+    position: relative;
+    z-index: 2;
+    box-shadow: 0 4px 20px rgba(91,143,185,0.3);
+  }
+
+  .mm-connector {
+    width: 2px;
+    height: 24px;
+    background: linear-gradient(180deg, var(--accent), transparent);
+    margin: 0 auto;
+  }
+
+  .mm-branches {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    justify-content: center;
+    width: 100%;
+  }
+
+  .mm-branch {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+    min-width: 130px;
+    max-width: 180px;
+  }
+
+  .mm-branch-line {
+    width: 2px;
+    height: 20px;
+    background: var(--asphalt);
+    margin: 0 auto;
+  }
+
+  .mm-node {
+    background: rgba(70,76,85,0.5);
+    border: 1px solid var(--border2);
+    color: var(--falls);
+    font-size: 11.5px;
+    font-weight: 500;
+    padding: 8px 14px;
+    border-radius: 6px;
+    text-align: center;
+    width: 100%;
+    transition: all 0.2s;
+  }
+
+  .mm-node:hover {
+    background: rgba(91,143,185,0.15);
+    border-color: rgba(91,143,185,0.3);
+    color: var(--ash);
+  }
+
+  .mm-leaves {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-top: 6px;
+    width: 100%;
+  }
+
+  .mm-leaf {
+    background: rgba(48,47,51,0.6);
+    border: 1px solid rgba(159,167,179,0.07);
+    color: var(--sea-lion);
+    font-size: 10.5px;
+    padding: 5px 10px;
+    border-radius: 4px;
+    text-align: center;
+  }
+
+  /* ─── FORMULA BOX ─── */
+  .formula {
+    background: rgba(91,143,185,0.08);
+    border: 1px solid rgba(91,143,185,0.2);
+    border-radius: 8px;
+    padding: 14px 20px;
+    text-align: center;
+    font-family: 'Syne', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--ash);
+    margin: 16px 0;
+    letter-spacing: 0.02em;
+  }
+
+  /* ─── EXAM BOX ─── */
+  .exam-box {
+    background: rgba(126,200,200,0.07);
+    border: 1px solid rgba(126,200,200,0.2);
+    border-radius: 8px;
+    padding: 14px 18px;
+    margin: 12px 0;
+  }
+
+  .exam-box .label {
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent2);
+    font-weight: 700;
+    margin-bottom: 6px;
+  }
+
+  .exam-box p { color: var(--falls); font-size: 13px; }
+
+  /* ─── COMPARE CARD ─── */
+  .compare {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    border: 1px solid var(--border2);
+    border-radius: 10px;
+    overflow: hidden;
+    margin: 16px 0;
+  }
+
+  .compare-col { padding: 18px 20px; }
+  .compare-col:first-child {
+    background: rgba(91,143,185,0.06);
+    border-right: 1px solid var(--border2);
+  }
+  .compare-col:last-child { background: rgba(70,76,85,0.15); }
+
+  .compare-col h4 {
+    font-family: 'Syne', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+
+  .compare-col:first-child h4 { color: var(--accent2); }
+  .compare-col:last-child h4 { color: var(--sea-lion); }
+
+  .compare-col ul { list-style: none; }
+  .compare-col ul li {
+    font-size: 12.5px;
+    color: var(--falls);
+    padding: 4px 0;
+    border-bottom: 1px solid rgba(159,167,179,0.06);
+  }
+
+  /* ─── SDG GOAL GRID ─── */
+  .sdg-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 10px;
+    margin: 16px 0;
+  }
+
+  .sdg-item {
+    background: rgba(48,47,51,0.6);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: all 0.2s;
+    cursor: default;
+  }
+
+  .sdg-item:hover {
+    border-color: rgba(91,143,185,0.3);
+    background: rgba(70,76,85,0.4);
+  }
+
+  .sdg-num {
+    font-family: 'Syne', sans-serif;
+    font-size: 18px;
+    font-weight: 800;
+    color: var(--accent);
+    min-width: 32px;
+    line-height: 1;
+  }
+
+  .sdg-name {
+    font-size: 11.5px;
+    color: var(--falls);
+    line-height: 1.35;
+    font-weight: 500;
+  }
+
+  /* ─── FLOW DIAGRAM ─── */
+  .flow {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    flex-wrap: wrap;
+    margin: 16px 0;
+    justify-content: center;
+  }
+
+  .flow-node {
+    background: rgba(70,76,85,0.5);
+    border: 1px solid var(--border2);
+    padding: 10px 16px;
+    border-radius: 6px;
+    font-size: 12px;
+    color: var(--falls);
+    font-weight: 500;
+    text-align: center;
+  }
+
+  .flow-arrow {
+    color: var(--asphalt);
+    font-size: 18px;
+    padding: 0 8px;
+  }
+
+  /* ─── CYCLE ─── */
+  .cycle {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+    margin: 16px auto;
+    width: fit-content;
+  }
+
+  .cycle-node {
+    background: rgba(91,143,185,0.1);
+    border: 1px solid rgba(91,143,185,0.25);
+    color: var(--ash);
+    padding: 8px 24px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 500;
+    text-align: center;
+    min-width: 160px;
+  }
+
+  .cycle-arrow {
+    color: var(--accent);
+    font-size: 16px;
+    line-height: 1.5;
+    text-align: center;
+  }
+
+  /* ─── TRAP DIAGRAM ─── */
+  .trap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    margin: 16px 0;
+  }
+
+  .trap-node {
+    background: rgba(70,76,85,0.35);
+    border: 1px solid var(--border);
+    padding: 8px 20px;
+    border-radius: 4px;
+    font-size: 12px;
+    color: var(--falls);
+    text-align: center;
+    min-width: 160px;
+  }
+
+  .trap-arrow { color: var(--sea-lion); font-size: 14px; line-height: 1.5; }
+
+  /* ─── HIGHLIGHT BADGE ─── */
+  .badge {
+    display: inline-block;
+    background: rgba(91,143,185,0.15);
+    border: 1px solid rgba(91,143,185,0.3);
+    color: var(--accent);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 2px 8px;
+    border-radius: 3px;
+    margin-right: 4px;
+  }
+
+  .badge.teal {
+    background: rgba(126,200,200,0.1);
+    border-color: rgba(126,200,200,0.25);
+    color: var(--accent2);
+  }
+
+  /* ─── BACK TO TOP ─── */
+  .back-top {
+    position: fixed;
+    bottom: 32px;
+    right: 32px;
+    background: rgba(48,47,51,0.9);
+    border: 1px solid var(--border2);
+    color: var(--falls);
+    font-size: 11px;
+    padding: 10px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    text-decoration: none;
+    backdrop-filter: blur(10px);
+    transition: all 0.2s;
+    font-family: 'DM Mono', monospace;
+    z-index: 50;
+  }
+
+  .back-top:hover { background: rgba(91,143,185,0.2); color: var(--ash); }
+
+  /* ─── PROGRESS BAR ─── */
+  .progress-bar {
+    position: fixed;
+    top: 0;
+    left: 260px;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    transform-origin: left;
+    transform: scaleX(0);
+    z-index: 200;
+    transition: transform 0.1s;
+  }
+
+  /* ─── QUICK REVISION ─── */
+  .revision-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 10px;
+    margin: 16px 0;
+  }
+
+  .revision-item {
+    background: rgba(70,76,85,0.25);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 12px 16px;
+  }
+
+  .revision-item .r-label {
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent2);
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+
+  .revision-item p { font-size: 12.5px; color: var(--falls); }
+
+  /* ─── RESPONSIVE ─── */
+  @media (max-width: 900px) {
+    .sidebar { display: none; }
+    .main { margin-left: 0; padding: 24px 20px; }
+    .progress-bar { left: 0; }
+    .grid-2, .grid-3 { grid-template-columns: 1fr; }
+    .compare { grid-template-columns: 1fr; }
+    .compare-col:first-child { border-right: none; border-bottom: 1px solid var(--border2); }
+    .hero-stats { flex-wrap: wrap; gap: 20px; }
+    .mm-branches { gap: 8px; }
+  }
+
+  /* ─── ANIMATIONS ─── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .module { animation: fadeUp 0.5s ease both; }
+  .module:nth-child(1) { animation-delay: 0.05s; }
+  .module:nth-child(2) { animation-delay: 0.1s; }
+  .module:nth-child(3) { animation-delay: 0.15s; }
+  .module:nth-child(4) { animation-delay: 0.2s; }
+  .module:nth-child(5) { animation-delay: 0.25s; }
+
+  p { color: var(--falls); font-size: 13px; line-height: 1.8; margin-bottom: 8px; }
+  strong { color: var(--ash); }
+  code { background: rgba(70,76,85,0.5); padding: 1px 6px; border-radius: 3px; font-size: 12px; color: var(--accent2); }
+</style>
+</head>
+<body>
+
+<div class="progress-bar" id="pbar"></div>
+
+<!-- ───── SIDEBAR ───── -->
+<nav class="sidebar">
+  <div class="sidebar-logo">
+    <span>Study Guide</span>
+    <h2>SDG Complete<br>Notes</h2>
+  </div>
+
+  <div class="nav-section-label">Modules</div>
+  <a class="nav-item active" href="#m1"><span class="num">01</span>Sustainable Development</a>
+  <a class="nav-item" href="#m2"><span class="num">02</span>Sustainable Cities</a>
+  <a class="nav-item" href="#m3"><span class="num">03</span>Curbing Climate Change</a>
+  <a class="nav-item" href="#m4"><span class="num">04</span>Saving Biodiversity</a>
+  <a class="nav-item" href="#m5"><span class="num">05</span>SDGs</a>
+
+  <div class="nav-section-label" style="margin-top:16px;">Quick Jump</div>
+  <a class="nav-item" href="#pillars"><span class="num">→</span>3 Pillars</a>
+  <a class="nav-item" href="#poverty"><span class="num">→</span>Poverty & Inequality</a>
+  <a class="nav-item" href="#smart-infra"><span class="num">→</span>Smart Infrastructure</a>
+  <a class="nav-item" href="#greenhouse"><span class="num">→</span>Greenhouse Effect</a>
+  <a class="nav-item" href="#biodiv-threats"><span class="num">→</span>Biodiversity Threats</a>
+  <a class="nav-item" href="#17-sdgs"><span class="num">→</span>17 SDGs Table</a>
+  <a class="nav-item" href="#governance"><span class="num">→</span>Good Governance</a>
+</nav>
+
+<!-- ───── MAIN ───── -->
+<main class="main">
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-tag">Complete Study Notes</div>
+    <h1>Sustainable<br><em>Development</em> Goals</h1>
+    <p class="hero-sub">All 5 modules with definitions, concepts, tables, and mind maps — organized for maximum retention and exam readiness.</p>
+    <div class="hero-stats">
+      <div class="stat"><span class="stat-num">5</span><span class="stat-label">Modules</span></div>
+      <div class="stat"><span class="stat-num">17</span><span class="stat-label">SDGs</span></div>
+      <div class="stat"><span class="stat-num">30+</span><span class="stat-label">Mind Maps</span></div>
+      <div class="stat"><span class="stat-num">2030</span><span class="stat-label">Agenda</span></div>
+    </div>
+  </div>
+
+
+  <!-- ═══════════════════════════════════════════
+       MODULE 1 — SUSTAINABLE DEVELOPMENT
+  ════════════════════════════════════════════ -->
+  <section class="module" id="m1">
+    <div class="module-header">
+      <div class="module-num">01</div>
+      <div class="module-title-block">
+        <div class="module-tag">Module 1</div>
+        <div class="module-title">Sustainable Development</div>
+      </div>
+    </div>
+
+    <!-- 1.1 Definition -->
+    <div class="section-heading">Definition</div>
+    <div class="definition">
+      <p>"Development that meets the needs of the present without compromising the ability of future generations to meet their own needs."</p>
+      <div class="source">— Brundtland Commission, 1987</div>
+    </div>
+
+    <div class="section-heading">Why Sustainable Development is Needed</div>
+    <p>Earlier development focused on: <strong>industrial growth, infrastructure expansion, profit maximization, and rapid urbanization</strong> — which caused serious problems.</p>
+
+    <div class="card" style="margin:16px 0;">
+      <div class="card-title"><span class="dot"></span>Problems Caused by Traditional Development</div>
+      <table class="data-table">
+        <thead><tr><th>Problem</th><th>Effect</th></tr></thead>
+        <tbody>
+          <tr><td>Pollution</td><td>Air, water and soil degradation</td></tr>
+          <tr><td>Climate Change</td><td>Global warming and extreme weather</td></tr>
+          <tr><td>Resource Depletion</td><td>Exhaustion of water, coal, oil</td></tr>
+          <tr><td>Biodiversity Loss</td><td>Species extinction</td></tr>
+          <tr><td>Social Inequality</td><td>Rich-poor gap</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="exam-box">
+      <div class="label">Core Idea</div>
+      <p>Development should be: <strong>Balanced · Responsible · Long-Term · Inclusive</strong></p>
+    </div>
+
+    <!-- PILLARS -->
+    <div class="section-heading" id="pillars">Three Pillars of Sustainable Development</div>
+    <div class="grid-3">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Environmental</div>
+        <p>Protection and conservation of natural resources.</p>
+        <ul class="check-list">
+          <li>Pollution control</li>
+          <li>Biodiversity conservation</li>
+          <li>Forest protection</li>
+          <li>Renewable energy usage</li>
+        </ul>
+        <div class="exam-box" style="margin-top:12px;"><div class="label">Example</div><p>Solar power instead of coal power.</p></div>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Economic</div>
+        <p>Economic growth without environmental destruction.</p>
+        <ul class="check-list">
+          <li>Job creation</li>
+          <li>Innovation</li>
+          <li>Resource efficiency</li>
+          <li>Long-term growth</li>
+        </ul>
+        <div class="exam-box" style="margin-top:12px;"><div class="label">Example</div><p>Green manufacturing industries.</p></div>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Social</div>
+        <p>Improving quality of life and ensuring equality.</p>
+        <ul class="check-list">
+          <li>Poverty reduction</li>
+          <li>Education & healthcare</li>
+          <li>Gender equality</li>
+          <li>Equal opportunities</li>
+        </ul>
+        <div class="exam-box" style="margin-top:12px;"><div class="label">Example</div><p>Affordable education for all citizens.</p></div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:16px;">
+      <div class="card-title"><span class="dot"></span>Exam Table — Three Pillars</div>
+      <table class="data-table">
+        <thead><tr><th>Environmental</th><th>Economic</th><th>Social</th></tr></thead>
+        <tbody>
+          <tr><td>Protect nature</td><td>Generate income</td><td>Improve quality of life</td></tr>
+          <tr><td>Reduce pollution</td><td>Create jobs</td><td>Reduce poverty</td></tr>
+          <tr><td>Save resources</td><td>Encourage innovation</td><td>Ensure equality</td></tr>
+          <tr><td>Renewable energy</td><td>Sustainable industries</td><td>Education & healthcare</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Mind Map 1 -->
+    <div class="mindmap-wrapper">
+      <div class="mindmap-title">Mind Map — Three Pillars</div>
+      <div class="mindmap">
+        <div class="mm-center">SUSTAINABLE DEVELOPMENT</div>
+        <div class="mm-connector"></div>
+        <div class="mm-branches">
+          <div class="mm-branch">
+            <div class="mm-branch-line"></div>
+            <div class="mm-node">ENVIRONMENTAL</div>
+            <div class="mm-leaves">
+              <div class="mm-leaf">Pollution</div>
+              <div class="mm-leaf">Biodiversity</div>
+              <div class="mm-leaf">Forests</div>
+              <div class="mm-leaf">Renewable Energy</div>
+            </div>
+          </div>
+          <div class="mm-branch">
+            <div class="mm-branch-line"></div>
+            <div class="mm-node">ECONOMIC</div>
+            <div class="mm-leaves">
+              <div class="mm-leaf">Jobs</div>
+              <div class="mm-leaf">Innovation</div>
+              <div class="mm-leaf">Growth</div>
+              <div class="mm-leaf">Efficiency</div>
+            </div>
+          </div>
+          <div class="mm-branch">
+            <div class="mm-branch-line"></div>
+            <div class="mm-node">SOCIAL</div>
+            <div class="mm-leaves">
+              <div class="mm-leaf">Education</div>
+              <div class="mm-leaf">Healthcare</div>
+              <div class="mm-leaf">Equality</div>
+              <div class="mm-leaf">Poverty Reduction</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Economic Growth vs Environmental -->
+    <div class="section-heading">Economic Growth vs Environmental Protection</div>
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Traditional Growth Model</div>
+        <p>Based on: GDP, Production, Industries, Employment, Income levels</p>
+        <p style="margin-top:8px;color:var(--sea-lion);">Driven by: Fossil fuels · Resource extraction · Industrialization</p>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Conflict Examples</div>
+        <ul class="problem-list">
+          <li><strong>Factory:</strong> Employment but pollution</li>
+          <li><strong>Coal Plant:</strong> Electricity but CO₂ emissions</li>
+          <li><strong>Data Centers:</strong> Cloud/AI but huge electricity consumption</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="formula">Growth + Environmental Protection = Sustainable Growth</div>
+
+    <div class="section-heading">Methods of Sustainable Growth</div>
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>1. Renewable Energy</div>
+        <div class="pill-list">
+          <span class="pill accent">Solar</span><span class="pill accent">Wind</span><span class="pill accent">Hydro</span><span class="pill accent">Biomass</span>
+        </div>
+        <p>Benefits: Clean energy, Reduced emissions</p>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>2. Green Manufacturing</div>
+        <div class="pill-list">
+          <span class="pill">Recycling</span><span class="pill">Waste treatment</span><span class="pill">Energy efficiency</span>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>3. Circular Economy</div>
+        <div class="compare">
+          <div class="compare-col"><h4>Traditional</h4><ul><li>Take → Make → Use → Throw</li></ul></div>
+          <div class="compare-col"><h4>Sustainable</h4><ul><li>Take → Make → Use → Repair → Reuse → Recycle</li></ul></div>
+        </div>
+        <p><em>Example:</em> Recycling old mobile phones.</p>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>4. Energy Efficient Technologies</div>
+        <div class="pill-list">
+          <span class="pill green">LED bulbs</span><span class="pill green">Efficient processors</span><span class="pill green">Smart appliances</span>
+        </div>
+        <table class="data-table" style="margin-top:10px;">
+          <thead><tr><th>Traditional IT</th><th>Sustainable IT</th></tr></thead>
+          <tbody>
+            <tr><td>Inefficient servers</td><td>Cloud optimization</td></tr>
+            <tr><td>Bad coding</td><td>Energy-efficient coding</td></tr>
+            <tr><td>Frequent hardware replacement</td><td>Virtualization</td></tr>
+            <tr><td>Resource wastage</td><td>Edge computing</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Mind Map Sustainable Growth -->
+    <div class="mindmap-wrapper">
+      <div class="mindmap-title">Mind Map — Sustainable Growth</div>
+      <div class="mindmap">
+        <div class="mm-center">SUSTAINABLE GROWTH</div>
+        <div class="mm-connector"></div>
+        <div class="mm-branches">
+          <div class="mm-branch">
+            <div class="mm-branch-line"></div>
+            <div class="mm-node">Renewable Energy</div>
+            <div class="mm-leaves"><div class="mm-leaf">Solar Wind Hydro Biomass</div></div>
+          </div>
+          <div class="mm-branch">
+            <div class="mm-branch-line"></div>
+            <div class="mm-node">Green Manufacturing</div>
+            <div class="mm-leaves"><div class="mm-leaf">Recycle · Waste · Efficiency</div></div>
+          </div>
+          <div class="mm-branch">
+            <div class="mm-branch-line"></div>
+            <div class="mm-node">Circular Economy</div>
+            <div class="mm-leaves"><div class="mm-leaf">Repair · Reuse · Recycle</div></div>
+          </div>
+          <div class="mm-branch">
+            <div class="mm-branch-line"></div>
+            <div class="mm-node">Energy Efficient Tech</div>
+            <div class="mm-leaves"><div class="mm-leaf">LED · Smart · Processors</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Poverty & Inequality -->
+    <div class="section-heading" id="poverty">Poverty &amp; Inequality</div>
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Poverty</div>
+        <p>Lack of: <strong>Income · Food · Water · Shelter · Education · Healthcare</strong></p>
+        <div class="sub-heading">Poverty Trap</div>
+        <div class="trap">
+          <div class="trap-node">Poverty</div>
+          <div class="trap-arrow">↓</div>
+          <div class="trap-node">No Education</div>
+          <div class="trap-arrow">↓</div>
+          <div class="trap-node">Low Income</div>
+          <div class="trap-arrow">↓</div>
+          <div class="trap-node">Poverty (cycle)</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Types of Inequality</div>
+        <ul class="check-list">
+          <li><strong>Income Inequality:</strong> ₹10,000/month vs ₹10,00,000/month</li>
+          <li><strong>Opportunity Inequality:</strong> Unequal access to education & resources</li>
+          <li><strong>Gender Inequality:</strong> Unequal treatment based on gender</li>
+          <li><strong>Digital Divide:</strong> Urban vs rural internet/laptop access</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="section-heading">Role of Technology in Reducing Poverty</div>
+    <div class="grid-3">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Online Education</div>
+        <div class="pill-list"><span class="pill accent">SWAYAM</span><span class="pill accent">Coursera</span></div>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Digital Banking</div>
+        <div class="pill-list"><span class="pill accent">UPI</span><span class="pill accent">Mobile Banking</span></div>
+        <p>Benefit: Financial inclusion</p>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>E-Governance & Telemedicine</div>
+        <p>Government services & remote healthcare consultation through digital platforms.</p>
+      </div>
+    </div>
+
+    <!-- Mind Map Poverty -->
+    <div class="mindmap-wrapper">
+      <div class="mindmap-title">Mind Map — Poverty & Inequality</div>
+      <div class="mindmap">
+        <div class="mm-center">POVERTY & INEQUALITY</div>
+        <div class="mm-connector"></div>
+        <div class="mm-branches">
+          <div class="mm-branch">
+            <div class="mm-branch-line"></div>
+            <div class="mm-node">Poverty Trap</div>
+            <div class="mm-leaves"><div class="mm-leaf">Poverty → No Education → Low Income</div></div>
+          </div>
+          <div class="mm-branch">
+            <div class="mm-branch-line"></div>
+            <div class="mm-node">Income Gap</div>
+            <div class="mm-leaves"><div class="mm-leaf">Earnings disparity</div></div>
+          </div>
+          <div class="mm-branch">
+            <div class="mm-branch-line"></div>
+            <div class="mm-node">Gender Gap</div>
+            <div class="mm-leaves"><div class="mm-leaf">Unequal treatment</div></div>
+          </div>
+          <div class="mm-branch">
+            <div class="mm-branch-line"></div>
+            <div class="mm-node">Digital Divide</div>
+            <div class="mm-leaves"><div class="mm-leaf">Urban vs Rural access</div></div>
+          </div>
+          <div class="mm-branch">
+            <div class="mm-branch-line"></div>
+            <div class="mm-node">Technology Solutions</div>
+            <div class="mm-leaves">
+              <div class="mm-leaf">Online Education</div>
+              <div class="mm-leaf">Telemedicine</div>
+              <div class="mm-leaf">Digital Banking</div>
+              <div class="mm-leaf">E-Governance</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════════════════════════════
+       MODULE 2 — SUSTAINABLE CITIES
+  ════════════════════════════════════════════ -->
+  <section class="module" id="m2">
+    <div class="module-header">
+      <div class="module-num">02</div>
+      <div class="module-title-block">
+        <div class="module-tag">Module 2</div>
+        <div class="module-title">Sustainable Cities</div>
+      </div>
+    </div>
+
+    <div class="section-heading">Urbanization</div>
+    <div class="definition">
+      <p>Urbanization is the movement of people from rural areas (villages) to urban areas (cities).</p>
+    </div>
+
+    <div class="card" style="margin-top:16px;">
+      <div class="card-title"><span class="dot"></span>Global Urbanization Trends</div>
+      <table class="data-table">
+        <thead><tr><th>Year</th><th>Urban Population</th></tr></thead>
+        <tbody>
+          <tr><td>1950</td><td>~30%</td></tr>
+          <tr><td>Present</td><td>&gt;55%</td></tr>
+          <tr><td>2050 (Expected)</td><td>~70%</td></tr>
+        </tbody>
+      </table>
+      <div class="exam-box" style="margin-top:12px;"><div class="label">Key Fact</div><p>Cities generate 80% of global GDP · consume 75% of resources · produce 70% of carbon emissions</p></div>
+    </div>
+
+    <div class="section-heading">Types of Urbanization</div>
+    <div class="grid-3">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>1. Rapid Urbanization</div>
+        <p>Cities grow faster than planning and infrastructure.</p>
+        <div class="pill-list"><span class="pill">India</span><span class="pill">China</span><span class="pill">Nigeria</span></div>
+        <p style="margin-top:8px;color:#c06060;font-size:12px;">Problems: Slums · Traffic · Pollution · Water shortages</p>
+        <div class="exam-box" style="margin-top:10px;"><div class="label">Keyword</div><p>Unplanned Growth</p></div>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>2. Planned Urbanization</div>
+        <p>City development is planned before expansion.</p>
+        <div class="pill-list"><span class="pill accent">Singapore</span><span class="pill accent">Japan</span><span class="pill accent">Germany</span></div>
+        <ul class="check-list" style="margin-top:8px;">
+          <li>Proper zoning</li>
+          <li>Efficient transport</li>
+          <li>Waste management</li>
+          <li>Smart governance</li>
+        </ul>
+        <div class="exam-box" style="margin-top:10px;"><div class="label">Keyword</div><p>Organized Development</p></div>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>3. Mega Cities</div>
+        <p>Cities with population <strong>&gt;10 million</strong>.</p>
+        <div class="pill-list"><span class="pill">Tokyo</span><span class="pill">Delhi</span><span class="pill">Shanghai</span></div>
+        <p style="margin-top:8px;color:var(--sea-lion);font-size:12px;">Challenges: Housing shortage · Infrastructure pressure · High resource demand</p>
+      </div>
+    </div>
+
+    <!-- Mind Map Urbanization -->
+    <div class="mindmap-wrapper">
+      <div class="mindmap-title">Mind Map — Urbanization</div>
+      <div class="mindmap">
+        <div class="mm-center">URBANIZATION</div>
+        <div class="mm-connector"></div>
+        <div class="mm-branches">
+          <div class="mm-branch">
+            <div class="mm-branch-line"></div>
+            <div class="mm-node">Rapid Urbanization</div>
+            <div class="mm-leaves"><div class="mm-leaf">Slums · Traffic · Pollution</div></div>
+          </div>
+          <div class="mm-branch">
+            <div class="mm-branch-line"></div>
+            <div class="mm-node">Planned Urbanization</div>
+            <div class="mm-leaves"><div class="mm-leaf">Smart Planning · Zoning</div></div>
+          </div>
+          <div class="mm-branch">
+            <div class="mm-branch-line"></div>
+            <div class="mm-node">Mega Cities</div>
+            <div class="mm-leaves"><div class="mm-leaf">&gt;10 Million Population</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sustainable City -->
+    <div class="section-heading">Development of a Sustainable City</div>
+    <div class="definition">
+      <p>A Sustainable City meets present needs, protects environment, promotes economic growth, ensures social equity, and plans for future generations.</p>
+    </div>
+
+    <div class="section-heading" style="font-size:15px;">A. Environmental Features</div>
+    <div class="grid-3">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Green Spaces</div>
+        <div class="pill-list"><span class="pill green">Parks</span><span class="pill green">Gardens</span><span class="pill green">Urban forests</span></div>
+        <p style="margin-top:8px;">Reduce pollution · Reduce urban heat · Improve health</p>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Renewable Energy</div>
+        <div class="pill-list"><span class="pill accent">Solar</span><span class="pill accent">Wind</span><span class="pill accent">Hydro</span></div>
+        <p style="margin-top:8px;font-style:italic;">Solar-powered buildings.</p>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Efficient Public Transport</div>
+        <div class="pill-list"><span class="pill">Metro</span><span class="pill">Electric buses</span><span class="pill">Cycling tracks</span></div>
+        <p style="margin-top:8px;">Less traffic · Lower emissions</p>
+      </div>
+    </div>
+
+    <div class="section-heading" style="font-size:15px;">B. Economic Features</div>
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Employment & Innovation</div>
+        <p>Jobs in IT, Manufacturing, Services. Supported by: Startups · Research centers · Tech parks</p>
+        <div class="exam-box" style="margin-top:10px;"><div class="label">Example</div><p>Bengaluru IT ecosystem.</p></div>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Sustainable Industries</div>
+        <ul class="check-list">
+          <li>Less pollution</li>
+          <li>Waste treatment</li>
+          <li>Renewable energy usage</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="section-heading" style="font-size:15px;">C. Social Features</div>
+    <div class="grid-3">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Affordable Housing</div>
+        <p>Housing accessible to all income groups.</p>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Inclusive Infrastructure</div>
+        <div class="pill-list"><span class="pill">Wheelchair ramps</span><span class="pill">Public toilets</span><span class="pill">Safe footpaths</span></div>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Gender Safety</div>
+        <div class="pill-list"><span class="pill">CCTV surveillance</span><span class="pill">Smart street lights</span><span class="pill">Safe transport</span></div>
+      </div>
+    </div>
+
+    <div class="section-heading">Sustainable vs Unsustainable City</div>
+    <div class="compare">
+      <div class="compare-col">
+        <h4>Sustainable City</h4>
+        <ul>
+          <li>Green spaces</li>
+          <li>Efficient transport</li>
+          <li>Clean air</li>
+          <li>Rainwater harvesting</li>
+          <li>Waste segregation</li>
+          <li>Smart drainage</li>
+        </ul>
+      </div>
+      <div class="compare-col">
+        <h4>Unsustainable City</h4>
+        <ul>
+          <li>Lack of greenery</li>
+          <li>Traffic jams</li>
+          <li>Pollution</li>
+          <li>Water scarcity</li>
+          <li>Garbage accumulation</li>
+          <li>Frequent flooding</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="section-heading">Green Buildings & Rainwater Harvesting</div>
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Green Buildings</div>
+        <p>Buildings designed to reduce environmental impact.</p>
+        <div class="pill-list"><span class="pill green">Natural lighting</span><span class="pill green">Rainwater harvesting</span><span class="pill green">Energy efficiency</span><span class="pill green">Better insulation</span></div>
+        <ul class="check-list" style="margin-top:10px;">
+          <li>Lower electricity consumption</li>
+          <li>Reduced carbon footprint</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Rainwater Harvesting</div>
+        <p>Collection and storage of rainwater for future use.</p>
+        <ul class="check-list" style="margin-top:8px;">
+          <li>Reduces flooding</li>
+          <li>Conserves water</li>
+          <li>Recharges groundwater</li>
+        </ul>
+        <div class="exam-box" style="margin-top:10px;"><div class="label">Example</div><p>Rooftop rainwater harvesting systems.</p></div>
+      </div>
+    </div>
+
+    <div class="section-heading">Smart City Mission (India)</div>
+    <div class="card">
+      <div class="card-title"><span class="dot"></span>Components</div>
+      <div class="grid-2" style="margin-top:8px;">
+        <div>
+          <div class="sub-heading">Digital Governance</div>
+          <p>Online services & online bill payments</p>
+          <div class="sub-heading">Smart Lighting</div>
+          <p>Automatic street lights</p>
+        </div>
+        <div>
+          <div class="sub-heading">Water Monitoring</div>
+          <p>Leak detection systems</p>
+          <div class="sub-heading">Surveillance Systems</div>
+          <p>CCTV-based monitoring</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Smart Infrastructure -->
+    <div class="section-heading" id="smart-infra">Smart Infrastructure</div>
+    <div class="definition">
+      <p>Infrastructure that uses technology to improve efficiency, reliability, and sustainability.</p>
+    </div>
+
+    <div class="section-heading" style="font-size:15px;">Key Technologies</div>
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Sensor</div>
+        <p>Device to detect and measure physical conditions.</p>
+        <div class="pill-list"><span class="pill">Temperature sensor</span><span class="pill">Traffic sensor</span><span class="pill">Water level sensor</span></div>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>IoT (Internet of Things)</div>
+        <p>Network of interconnected devices communicating through the internet.</p>
+        <div class="exam-box" style="margin-top:8px;"><div class="label">Example</div><p>Smart water meter sending usage data automatically.</p></div>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Artificial Intelligence (AI)</div>
+        <p>Technology that enables systems to learn and make decisions.</p>
+        <div class="exam-box" style="margin-top:8px;"><div class="label">Example</div><p>Google Maps route optimization.</p></div>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Data Analytics & Automation</div>
+        <p>Analyzing data to discover patterns · Operation without continuous human intervention.</p>
+        <div class="exam-box" style="margin-top:8px;"><div class="label">Examples</div><p>Traffic prediction · Automatic street lighting</p></div>
+      </div>
+    </div>
+
+    <div class="section-heading" style="font-size:15px;">Applications of Smart Infrastructure</div>
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>1. Smart Traffic Management</div>
+        <div class="flow" style="margin:8px 0;flex-direction:column;align-items:flex-start;">
+          <div style="color:var(--sea-lion);font-size:12px;">Sensors detect congestion → AI adjusts traffic signals</div>
+        </div>
+        <ul class="check-list"><li>Reduced traffic</li><li>Lower fuel consumption</li><li>Reduced pollution</li></ul>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>2. Smart Water Systems</div>
+        <div class="pill-list"><span class="pill">Leak detection</span><span class="pill">Level monitoring</span><span class="pill">Quality monitoring</span></div>
+        <ul class="check-list" style="margin-top:8px;"><li>Reduced wastage</li><li>Better supply management</li></ul>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>3. Smart Grids</div>
+        <p>Intelligent electricity distribution systems.</p>
+        <ul class="check-list"><li>Balance electricity demand</li><li>Integrate renewable energy</li><li>Prevent blackouts</li><li>Efficient energy utilization</li></ul>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>4. Smart Waste Management</div>
+        <div class="flow" style="flex-direction:column;align-items:flex-start;margin:8px 0;">
+          <div style="color:var(--sea-lion);font-size:12px;">Sensors inside dustbins → Fill-level monitoring → Optimized collection routes</div>
+        </div>
+        <ul class="check-list"><li>Cleaner cities</li><li>Lower fuel usage</li></ul>
+      </div>
+    </div>
+
+    <!-- Mind Map Smart Infrastructure -->
+    <div class="mindmap-wrapper">
+      <div class="mindmap-title">Mind Map — Smart Infrastructure</div>
+      <div class="mindmap">
+        <div class="mm-center">SMART INFRASTRUCTURE</div>
+        <div class="mm-connector"></div>
+        <div class="mm-branches">
+          <div class="mm-branch">
+            <div class="mm-branch-line"></div>
+            <div class="mm-node">Traffic Management</div>
+            <div class="mm-leaves"><div class="mm-leaf">Sensors · AI Signals</div></div>
+          </div>
+          <div class="mm-branch">
+            <div class="mm-branch-line"></div>
+            <div class="mm-node">Water Systems</div>
+            <div class="mm-leaves"><div class="mm-leaf">Leak Detection</div></div>
+          </div>
+          <div class="mm-branch">
+            <div class="mm-branch-line"></div>
+            <div class="mm-node">Smart Grid</div>
+            <div class="mm-leaves"><div class="mm-leaf">Energy Management · No Blackouts</div></div>
+          </div>
+          <div class="mm-branch">
+            <div class="mm-branch-line"></div>
+            <div class="mm-node">Waste Management</div>
+            <div class="mm-leaves"><div class="mm-leaf">Smart Bins · Route Optimization</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════════════════════════════
+       MODULE 3 — CURBING CLIMATE CHANGE
+  ════════════════════════════════════════════ -->
+  <section class="module" id="m3">
+    <div class="module-header">
+      <div class="module-num">03</div>
+      <div class="module-title-block">
+        <div class="module-tag">Module 3</div>
+        <div class="module-title">Curbing Climate Change</div>
+      </div>
+    </div>
+
+    <div class="definition">
+      <p>Long-term alteration in temperature, rainfall, wind patterns, and other climatic conditions due to natural and human activities.</p>
+    </div>
+
+    <div class="section-heading">Weather vs Climate</div>
+    <div class="compare">
+      <div class="compare-col">
+        <h4>Weather</h4>
+        <ul>
+          <li>Short-term atmospheric condition</li>
+          <li>Changes hourly/daily</li>
+          <li>Forecast for days</li>
+          <li><em>"It is raining today."</em></li>
+        </ul>
+      </div>
+      <div class="compare-col">
+        <h4>Climate</h4>
+        <ul>
+          <li>Long-term average weather pattern</li>
+          <li>Changes over decades</li>
+          <li>Pattern over 30+ years</li>
+          <li><em>"Kerala receives heavy rainfall every year."</em></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="section-heading">Earth's Energy Balance</div>
+    <div class="card">
+      <div class="card-title"><span class="dot"></span>Process</div>
+      <div class="flow" style="flex-direction:column;align-items:center;gap:4px;">
+        <div class="flow-node">☀ Incoming Solar Radiation (Visible light + UV)</div>
+        <div class="flow-arrow">↓</div>
+        <div class="flow-node">Reflection by Clouds, Ice, Snow (Albedo)</div>
+        <div class="flow-arrow">↓</div>
+        <div class="flow-node">Absorption by Land, Oceans, Forests</div>
+        <div class="flow-arrow">↓</div>
+        <div class="flow-node">Earth emits Infrared Radiation (Heat)</div>
+      </div>
+      <div class="grid-2" style="margin-top:16px;">
+        <div class="exam-box"><div class="label">Stable</div><p>Incoming = Outgoing → Stable Temperature</p></div>
+        <div class="exam-box"><div class="label">Global Warming</div><p>Incoming &gt; Outgoing → Global Warming</p></div>
+      </div>
+    </div>
+
+    <!-- Greenhouse Effect -->
+    <div class="section-heading" id="greenhouse">Greenhouse Effect</div>
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>How It Works</div>
+        <div class="cycle">
+          <div class="cycle-node">1. Sunlight reaches Earth</div>
+          <div class="cycle-arrow">↓</div>
+          <div class="cycle-node">2. Earth absorbs energy</div>
+          <div class="cycle-arrow">↓</div>
+          <div class="cycle-node">3. Earth emits infrared heat</div>
+          <div class="cycle-arrow">↓</div>
+          <div class="cycle-node">4. Greenhouse gases trap heat</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Natural vs Enhanced</div>
+        <div class="exam-box"><div class="label">Natural</div><p>Earth Temperature ≈ 15°C — Life exists</p></div>
+        <div class="exam-box" style="margin-top:10px;"><div class="label">Without GHG</div><p>Earth Temperature ≈ −18°C — Life would not exist</p></div>
+        <div class="exam-box" style="margin-top:10px;"><div class="label">Enhanced (Human-caused)</div><p>More heat trapped → Global warming → Climate change</p></div>
+      </div>
+    </div>
+
+    <div class="section-heading">Major Greenhouse Gases</div>
+    <div class="card">
+      <table class="data-table">
+        <thead><tr><th>Gas</th><th>Major Source</th><th>Impact</th></tr></thead>
+        <tbody>
+          <tr><td><strong>CO₂</strong></td><td>Fossil fuels, Vehicles, Power plants, Deforestation</td><td>Largest contributor to global warming</td></tr>
+          <tr><td><strong>CH₄</strong></td><td>Livestock, Rice fields, Landfills</td><td>25× stronger than CO₂</td></tr>
+          <tr><td><strong>N₂O</strong></td><td>Fertilizers, Industries, Agriculture</td><td>300× stronger than CO₂</td></tr>
+          <tr><td><strong>Fluorinated Gases</strong></td><td>Refrigerators, AC, Electronics (HFCs, PFCs, SF₆)</td><td>Extremely powerful greenhouse gases</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="section-heading">Causes of Climate Change</div>
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Natural Causes</div>
+        <div class="pill-list"><span class="pill">Volcanic eruptions</span><span class="pill">Solar radiation changes</span><span class="pill">Ocean current changes</span></div>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Human Causes <span class="badge teal">Anthropogenic</span></div>
+        <div class="pill-list"><span class="pill accent">Burning fossil fuels</span><span class="pill accent">Deforestation</span><span class="pill accent">Industrialization</span><span class="pill accent">Urbanization</span><span class="pill accent">Unsustainable agriculture</span></div>
+      </div>
+    </div>
+
+    <div class="section-heading">Evidence of Climate Change</div>
+    <div class="pill-list">
+      <span class="pill green">Rising global temperatures</span>
+      <span class="pill green">Melting glaciers</span>
+      <span class="pill green">Rising sea levels</span>
+      <span class="pill green">Ocean warming</span>
+      <span class="pill green">Ocean acidification</span>
+      <span class="pill green">Extreme weather events</span>
+    </div>
+
+    <!-- Consequences -->
+    <div class="section-heading">Consequences of Climate Change</div>
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Environmental Impacts</div>
+        <ul class="problem-list">
+          <li>Loss of Biodiversity (Arctic species losing ice habitats)</li>
+          <li>Coral Reef Bleaching (Great Barrier Reef)</li>
+          <li>Forest Fires (drought + high temperatures)</li>
+          <li>Desertification (fertile land → desert)</li>
+          <li>Unpredictable rainfall, floods, droughts</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Water Resource Impacts</div>
+        <ul class="problem-list">
+          <li>Glacier Retreat (Himalayan glaciers)</li>
+          <li>Groundwater Depletion</li>
+          <li>Floods (property damage, contamination)</li>
+          <li>Droughts (water shortages, crop failure)</li>
+          <li>Drinking Water Scarcity</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Agricultural Impacts</div>
+        <ul class="problem-list">
+          <li>Reduced Crop Yield (excess heat)</li>
+          <li>Crop Failure (heat stress)</li>
+          <li>Pests and Diseases (warmer climate)</li>
+          <li>Food Insecurity (reduced availability + higher prices)</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Human Health Impacts</div>
+        <ul class="problem-list">
+          <li>Heat Stroke & Dehydration</li>
+          <li>Vector-Borne Diseases (Malaria, Dengue, Chikungunya)</li>
+          <li>Malnutrition (food shortage)</li>
+          <li>Respiratory Diseases (Asthma, Bronchitis)</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Economic Impacts</div>
+        <ul class="problem-list">
+          <li>Infrastructure Damage (roads, bridges, buildings)</li>
+          <li>Loss of Livelihoods (agriculture, fisheries, tourism)</li>
+          <li>Disaster Recovery Costs</li>
+          <li>Climate Refugees</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Coastal Impacts</div>
+        <ul class="problem-list">
+          <li>Sea Level Rise → Coastal flooding, Displacement</li>
+          <li>Coastal Erosion (shorelines retreating)</li>
+          <li>Saltwater Intrusion → Unsafe drinking water, Reduced agriculture</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Mitigation -->
+    <div class="section-heading">Climate Change Mitigation</div>
+    <div class="definition">
+      <p>Actions taken to reduce or prevent greenhouse gas emissions.</p>
+    </div>
+    <div class="exam-box"><div class="label">Remember</div><p><strong>Mitigation = Reduce Causes</strong></p></div>
+
+    <div class="grid-2" style="margin-top:16px;">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>1. Renewable Energy</div>
+        <div class="pill-list"><span class="pill accent">Solar</span><span class="pill accent">Wind</span><span class="pill accent">Hydro</span><span class="pill accent">Geothermal</span><span class="pill accent">Biomass</span></div>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>2. Energy Efficiency</div>
+        <div class="pill-list"><span class="pill">LED lighting</span><span class="pill">Efficient appliances</span><span class="pill">Smart grids</span><span class="pill">Green buildings</span></div>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>3. Sustainable Transport</div>
+        <div class="pill-list"><span class="pill green">Electric vehicles</span><span class="pill green">Public transport</span><span class="pill green">Cycling</span><span class="pill green">Walking</span><span class="pill green">Biofuels</span></div>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>4. Carbon Sequestration</div>
+        <p>Capturing and storing carbon.</p>
+        <div class="pill-list"><span class="pill">Afforestation</span><span class="pill">Reforestation</span><span class="pill">Soil carbon storage</span><span class="pill">CCS Technology</span></div>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>5. Sustainable Agriculture</div>
+        <div class="pill-list"><span class="pill">Organic farming</span><span class="pill">Agroforestry</span><span class="pill">Climate-resilient crops</span><span class="pill">Reduced fertilizer use</span></div>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>6. Waste Management & Lifestyle</div>
+        <div class="pill-list"><span class="pill">Recycling</span><span class="pill">Reuse</span><span class="pill">Composting</span><span class="pill">Methane capture</span></div>
+        <div class="pill-list" style="margin-top:6px;"><span class="pill green">Energy conservation</span><span class="pill green">Sustainable consumption</span><span class="pill green">Reduced meat</span></div>
+      </div>
+    </div>
+
+    <!-- Adaptation -->
+    <div class="section-heading">Climate Change Adaptation</div>
+    <div class="definition">
+      <p>Adjustments made to reduce harm caused by climate change.</p>
+    </div>
+    <div class="exam-box"><div class="label">Remember</div><p><strong>Adaptation = Reduce Impacts</strong></p></div>
+
+    <div class="grid-2" style="margin-top:16px;">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Infrastructure Adaptation</div>
+        <div class="pill-list"><span class="pill">Flood barriers</span><span class="pill">Cyclone shelters</span><span class="pill">Climate-resilient buildings</span><span class="pill">Improved drainage</span></div>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Water Management</div>
+        <div class="pill-list"><span class="pill">Rainwater harvesting</span><span class="pill">Watershed management</span><span class="pill">Desalination</span></div>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Agricultural Adaptation</div>
+        <div class="pill-list"><span class="pill green">Drip irrigation</span><span class="pill green">Drought-resistant crops</span><span class="pill green">Crop diversification</span><span class="pill green">Changing sowing seasons</span></div>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Coastal Adaptation</div>
+        <div class="pill-list"><span class="pill">Sea walls</span><span class="pill">Mangrove restoration</span><span class="pill">Coastal regulation</span></div>
+      </div>
+    </div>
+
+    <!-- Mitigation vs Adaptation Table -->
+    <div class="section-heading">Mitigation vs Adaptation</div>
+    <div class="card">
+      <table class="data-table">
+        <thead><tr><th>Basis</th><th>Mitigation</th><th>Adaptation</th></tr></thead>
+        <tbody>
+          <tr><td>Purpose</td><td>Reduce causes</td><td>Reduce impacts</td></tr>
+          <tr><td>Focus</td><td>Future prevention</td><td>Present & future protection</td></tr>
+          <tr><td>Examples</td><td>Renewable energy, afforestation</td><td>Flood barriers, drought-resistant crops</td></tr>
+          <tr><td>Scale</td><td>Global</td><td>Local/Regional</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Climate Policies -->
+    <div class="section-heading">Climate Change Mitigation Policies</div>
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Paris Agreement (2015)</div>
+        <p>Limit global warming to: <strong>Well below 2°C, preferably 1.5°C</strong></p>
+        <div class="pill-list" style="margin-top:8px;"><span class="pill accent">NDCs</span><span class="pill accent">Nationally Determined Contributions</span></div>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>UNFCCC & Kyoto Protocol</div>
+        <p><strong>UNFCCC</strong> — Framework for international climate negotiations.</p>
+        <p style="margin-top:8px;"><strong>Kyoto Protocol</strong> — Legally binding emission reduction targets for developed countries.</p>
+      </div>
+    </div>
+
+    <div class="section-heading" style="font-size:15px;">National Action Plan on Climate Change (NAPCC) — India</div>
+    <div class="card">
+      <div class="card-title"><span class="dot"></span>8 National Missions</div>
+      <div class="sdg-grid" style="margin-top:10px;">
+        <div class="sdg-item"><div class="sdg-num">1</div><div class="sdg-name">National Solar Mission</div></div>
+        <div class="sdg-item"><div class="sdg-num">2</div><div class="sdg-name">Enhanced Energy Efficiency Mission</div></div>
+        <div class="sdg-item"><div class="sdg-num">3</div><div class="sdg-name">Sustainable Habitat Mission</div></div>
+        <div class="sdg-item"><div class="sdg-num">4</div><div class="sdg-name">National Water Mission</div></div>
+        <div class="sdg-item"><div class="sdg-num">5</div><div class="sdg-name">Himalayan Ecosystem Mission</div></div>
+        <div class="sdg-item"><div class="sdg-num">6</div><div class="sdg-name">Green India Mission</div></div>
+        <div class="sdg-item"><div class="sdg-num">7</div><div class="sdg-name">Sustainable Agriculture Mission</div></div>
+        <div class="sdg-item"><div class="sdg-num">8</div><div class="sdg-name">Strategic Knowledge Mission</div></div>
+      </div>
+    </div>
+
+    <!-- Mind Map Climate -->
+    <div class="mindmap-wrapper">
+      <div class="mindmap-title">Mind Map — Climate Change Basics</div>
+      <div class="mindmap">
+        <div class="mm-center">CLIMATE CHANGE</div>
+        <div class="mm-connector"></div>
+        <div class="mm-branches">
+          <div class="mm-branch">
+            <div class="mm-branch-line"></div>
+            <div class="mm-node">Weather vs Climate</div>
+            <div class="mm-leaves"><div class="mm-leaf">Short-term vs Long-term</div></div>
+          </div>
+          <div class="mm-branch">
+            <div class="mm-branch-line"></div>
+            <div class="mm-node">Energy Balance</div>
+            <div class="mm-leaves"><div class="mm-leaf">Incoming = Outgoing → Stable</div></div>
+          </div>
+          <div class="mm-branch">
+            <div class="mm-branch-line"></div>
+            <div class="mm-node">Greenhouse Effect</div>
+            <div class="mm-leaves">
+              <div class="mm-leaf">CO₂</div>
+              <div class="mm-leaf">CH₄</div>
+              <div class="mm-leaf">N₂O</div>
+              <div class="mm-leaf">F-Gases</div>
+            </div>
+          </div>
+          <div class="mm-branch">
+            <div class="mm-branch-line"></div>
+            <div class="mm-node">Causes</div>
+            <div class="mm-leaves">
+              <div class="mm-leaf">Natural</div>
+              <div class="mm-leaf">Anthropogenic</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="mindmap-wrapper">
+      <div class="mindmap-title">Mind Map — Consequences</div>
+      <div class="mindmap">
+        <div class="mm-center">CONSEQUENCES</div>
+        <div class="mm-connector"></div>
+        <div class="mm-branches">
+          <div class="mm-branch"><div class="mm-branch-line"></div><div class="mm-node">Environmental</div><div class="mm-leaves"><div class="mm-leaf">Biodiversity · Coral · Fires</div></div></div>
+          <div class="mm-branch"><div class="mm-branch-line"></div><div class="mm-node">Water</div><div class="mm-leaves"><div class="mm-leaf">Glaciers · Floods · Drought</div></div></div>
+          <div class="mm-branch"><div class="mm-branch-line"></div><div class="mm-node">Agriculture</div><div class="mm-leaves"><div class="mm-leaf">Crop failure · Pests</div></div></div>
+          <div class="mm-branch"><div class="mm-branch-line"></div><div class="mm-node">Health</div><div class="mm-leaves"><div class="mm-leaf">Heat stroke · Diseases</div></div></div>
+          <div class="mm-branch"><div class="mm-branch-line"></div><div class="mm-node">Economy</div><div class="mm-leaves"><div class="mm-leaf">Infrastructure · Livelihoods</div></div></div>
+          <div class="mm-branch"><div class="mm-branch-line"></div><div class="mm-node">Coastal</div><div class="mm-leaves"><div class="mm-leaf">Sea level rise · Erosion</div></div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════════════════════════════
+       MODULE 4 — SAVING BIODIVERSITY
+  ════════════════════════════════════════════ -->
+  <section class="module" id="m4">
+    <div class="module-header">
+      <div class="module-num">04</div>
+      <div class="module-title-block">
+        <div class="module-tag">Module 4</div>
+        <div class="module-title">Saving Biodiversity</div>
+      </div>
+    </div>
+
+    <div class="definition">
+      <p>Biodiversity refers to the variety and variability of life on Earth, including plants, animals, microorganisms, and the ecosystems they form.</p>
+    </div>
+
+    <div class="section-heading">Levels of Biodiversity</div>
+    <div class="grid-3">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>1. Genetic Diversity</div>
+        <p>Variation in genes within the same species.</p>
+        <div class="exam-box" style="margin-top:8px;"><div class="label">Examples</div><p>Different rice varieties · Human genetic variations · Different cattle breeds</p></div>
+        <ul class="check-list" style="margin-top:8px;">
+          <li>Adaptation to environmental changes</li>
+          <li>Disease resistance</li>
+          <li>Evolutionary potential</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>2. Species Diversity</div>
+        <p>Variety of different species present in a region.</p>
+        <div class="exam-box" style="margin-top:8px;"><div class="label">Examples</div><p>Forest ecosystems · Coral reefs · Grasslands</p></div>
+        <ul class="check-list" style="margin-top:8px;">
+          <li>Ecological balance</li>
+          <li>Food chain stability</li>
+          <li>Healthy ecosystem</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>3. Ecosystem Diversity</div>
+        <p>Variety of ecosystems found on Earth.</p>
+        <div class="exam-box" style="margin-top:8px;"><div class="label">Examples</div><p>Forests · Deserts · Wetlands · Grasslands · Oceans</p></div>
+        <ul class="check-list" style="margin-top:8px;">
+          <li>Different habitats</li>
+          <li>Nutrient cycling</li>
+          <li>Supports multiple life forms</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:16px;">
+      <div class="card-title"><span class="dot"></span>Biodiversity Levels Table</div>
+      <table class="data-table">
+        <thead><tr><th>Type</th><th>Meaning</th><th>Example</th></tr></thead>
+        <tbody>
+          <tr><td>Genetic Diversity</td><td>Variation within species</td><td>Rice varieties</td></tr>
+          <tr><td>Species Diversity</td><td>Variety of species</td><td>Forest ecosystem</td></tr>
+          <tr><td>Ecosystem Diversity</td><td>Variety of ecosystems</td><td>Forests, deserts, oceans</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="section-heading">Importance of Biodiversity</div>
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Ecological</div>
+        <div class="pill-list"><span class="pill green">Maintains ecological balance</span><span class="pill green">Nutrient cycling</span><span class="pill green">Soil formation</span><span class="pill green">Energy flow</span></div>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Economic</div>
+        <div class="pill-list"><span class="pill">Food</span><span class="pill">Medicines</span><span class="pill">Timber</span><span class="pill">Fibers</span><span class="pill">Oils</span></div>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Social & Cultural</div>
+        <p>Supports traditional knowledge · Livelihoods · Cultural significance</p>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Environmental</div>
+        <div class="pill-list"><span class="pill accent">Climate regulation</span><span class="pill accent">Pollination</span><span class="pill accent">Water purification</span><span class="pill accent">Disaster protection</span></div>
+        <div class="exam-box" style="margin-top:8px;"><div class="label">Example</div><p>Mangroves reduce cyclone impact.</p></div>
+      </div>
+    </div>
+
+    <!-- Threats -->
+    <div class="section-heading" id="biodiv-threats">Biodiversity Under Threat</div>
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>1. Habitat Loss</div>
+        <p>Destruction or fragmentation of natural habitats.</p>
+        <div class="pill-list"><span class="pill">Urbanization</span><span class="pill">Agriculture</span><span class="pill">Mining</span><span class="pill">Infrastructure</span></div>
+        <div class="exam-box" style="margin-top:8px;"><div class="label">Example</div><p>Deforestation for agriculture → Species displacement & extinction risk.</p></div>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>2. Climate Change</div>
+        <ul class="problem-list">
+          <li>Species migration</li>
+          <li>Coral bleaching</li>
+          <li>Altered breeding cycles</li>
+          <li>Species extinction</li>
+        </ul>
+        <div class="exam-box" style="margin-top:8px;"><div class="label">Example</div><p>Polar species losing habitats.</p></div>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>3. Pollution</div>
+        <div class="pill-list"><span class="pill">Acid rain</span><span class="pill">Oil spills</span><span class="pill">Heavy metals</span><span class="pill">Marine plastic waste</span></div>
+        <p style="margin-top:8px;">Effects: Toxic environments · Species decline</p>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>4. Overexploitation</div>
+        <p>Excessive use of natural resources beyond regeneration capacity.</p>
+        <div class="pill-list"><span class="pill">Overfishing</span><span class="pill">Hunting</span><span class="pill">Poaching</span><span class="pill">Excessive plant harvesting</span></div>
+        <p style="margin-top:8px;">Effects: Resource depletion · Food chain imbalance</p>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>5. Invasive Species</div>
+        <p>Non-native species introduced into an ecosystem.</p>
+        <ul class="problem-list">
+          <li>Competition with native species</li>
+          <li>Spread of diseases</li>
+          <li>Ecosystem disruption</li>
+        </ul>
+        <div class="exam-box" style="margin-top:8px;"><div class="label">Example</div><p>Water Hyacinth in Indian water bodies.</p></div>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Effects of Biodiversity Loss</div>
+        <ul class="problem-list">
+          <li>Ecosystem Imbalance</li>
+          <li>Food chain collapse</li>
+          <li>Loss of Food Security</li>
+          <li>Reduced Ecosystem Services (Pollination, Water purification, Soil fertility)</li>
+          <li>Species Extinction (permanent loss)</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Oceans & Fisheries -->
+    <div class="section-heading">Oceans &amp; Fisheries</div>
+    <div class="exam-box"><div class="label">Key Fact</div><p>Oceans cover approximately <strong>70%</strong> of Earth's surface.</p></div>
+
+    <div class="grid-2" style="margin-top:16px;">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Functions of Oceans</div>
+        <ul class="check-list">
+          <li>Absorb heat, regulate temperature, absorb CO₂</li>
+          <li>Food Resources: Fish, Shellfish, Seaweed</li>
+          <li>Marine Ecosystems: Coral reefs, Mangroves</li>
+          <li>Economic: Tourism, Fisheries, Shipping, Energy</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Types of Fisheries</div>
+        <div class="sub-heading">Marine Fisheries</div>
+        <p>Oceans & Seas — Examples: Tuna, Sardines, Prawns</p>
+        <div class="sub-heading">Inland Fisheries</div>
+        <p>Rivers, Lakes, Reservoirs — Examples: Carp, Catfish</p>
+      </div>
+    </div>
+
+    <div class="section-heading" style="font-size:15px;">Problems in Oceans & Fisheries</div>
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Overfishing & Bycatch</div>
+        <p><strong>Overfishing:</strong> Fishing beyond reproductive capacity → Decline in fish stocks, Biodiversity loss</p>
+        <p style="margin-top:6px;"><strong>Bycatch:</strong> Accidental capture of Dolphins, Sharks, Sea turtles → Death of endangered species</p>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Marine Pollution & Climate Change</div>
+        <div class="pill-list"><span class="pill">Plastic waste</span><span class="pill">Oil spills</span><span class="pill">Sewage</span><span class="pill">Industrial discharge</span></div>
+        <p style="margin-top:8px;">Ocean acidification: CO₂ dissolved → Harms marine organisms, Damages shell-forming species</p>
+      </div>
+    </div>
+
+    <!-- Deforestation -->
+    <div class="section-heading">Deforestation</div>
+    <div class="definition">
+      <p>Large-scale removal of forests for non-forest uses.</p>
+    </div>
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Causes</div>
+        <div class="pill-list"><span class="pill accent">Agricultural Expansion</span><span class="pill accent">Logging</span><span class="pill accent">Urbanization</span><span class="pill accent">Mining</span></div>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Effects</div>
+        <ul class="problem-list">
+          <li>Loss of Biodiversity (species lose habitats)</li>
+          <li>Soil Erosion (top fertile soil removed)</li>
+          <li>Water Cycle Disruption</li>
+          <li>Increased CO₂ levels (less carbon absorption)</li>
+        </ul>
+        <div class="exam-box" style="margin-top:8px;"><div class="label">Example</div><p>Amazon Rainforest deforestation affects global climate.</p></div>
+      </div>
+    </div>
+
+    <div class="section-heading" style="font-size:15px;">Control Measures</div>
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Afforestation & Reforestation</div>
+        <p><strong>Afforestation:</strong> Planting trees where none existed before.</p>
+        <p style="margin-top:6px;"><strong>Reforestation:</strong> Replanting trees in deforested areas.</p>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Other Measures</div>
+        <ul class="check-list">
+          <li>Sustainable Forest Management</li>
+          <li>Environmental Laws (government regulations)</li>
+          <li>Public Awareness & Community participation</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- International Biodiversity -->
+    <div class="section-heading">International Dynamics of Biodiversity</div>
+    <div class="card">
+      <div class="card-title"><span class="dot"></span>Major International Efforts</div>
+      <table class="data-table">
+        <thead><tr><th>Organization/Area</th><th>Purpose</th></tr></thead>
+        <tbody>
+          <tr><td><strong>CBD</strong> (Convention on Biological Diversity)</td><td>Biodiversity Conservation · Sustainable Resource Use · Fair Benefit Sharing</td></tr>
+          <tr><td><strong>IUCN</strong> (Intl. Union for Conservation of Nature)</td><td>Nature conservation · Species assessment</td></tr>
+          <tr><td><strong>National Parks</strong></td><td>Protected ecosystems</td></tr>
+          <tr><td><strong>Wildlife Sanctuaries</strong></td><td>Protection of wildlife</td></tr>
+          <tr><td><strong>Biosphere Reserves</strong></td><td>Conservation + sustainable use</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Mind Map Biodiversity -->
+    <div class="mindmap-wrapper">
+      <div class="mindmap-title">Mind Map — Biodiversity</div>
+      <div class="mindmap">
+        <div class="mm-center">BIODIVERSITY</div>
+        <div class="mm-connector"></div>
+        <div class="mm-branches">
+          <div class="mm-branch">
+            <div class="mm-branch-line"></div>
+            <div class="mm-node">Genetic Diversity</div>
+            <div class="mm-leaves"><div class="mm-leaf">Genes · Varieties · Adaptation</div></div>
+          </div>
+          <div class="mm-branch">
+            <div class="mm-branch-line"></div>
+            <div class="mm-node">Species Diversity</div>
+            <div class="mm-leaves"><div class="mm-leaf">Species Variety · Balance</div></div>
+          </div>
+          <div class="mm-branch">
+            <div class="mm-branch-line"></div>
+            <div class="mm-node">Ecosystem Diversity</div>
+            <div class="mm-leaves"><div class="mm-leaf">Forests · Oceans · Wetlands</div></div>
+          </div>
+          <div class="mm-branch">
+            <div class="mm-branch-line"></div>
+            <div class="mm-node">Importance</div>
+            <div class="mm-leaves">
+              <div class="mm-leaf">Ecological</div>
+              <div class="mm-leaf">Economic</div>
+              <div class="mm-leaf">Social</div>
+              <div class="mm-leaf">Environmental</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="mindmap-wrapper">
+      <div class="mindmap-title">Mind Map — Biodiversity Threats</div>
+      <div class="mindmap">
+        <div class="mm-center">BIODIVERSITY THREATS</div>
+        <div class="mm-connector"></div>
+        <div class="mm-branches">
+          <div class="mm-branch"><div class="mm-branch-line"></div><div class="mm-node">Habitat Loss</div><div class="mm-leaves"><div class="mm-leaf">Urbanization · Agriculture</div></div></div>
+          <div class="mm-branch"><div class="mm-branch-line"></div><div class="mm-node">Climate Change</div><div class="mm-leaves"><div class="mm-leaf">Migration · Bleaching</div></div></div>
+          <div class="mm-branch"><div class="mm-branch-line"></div><div class="mm-node">Pollution</div><div class="mm-leaves"><div class="mm-leaf">Air · Water · Soil · Plastic</div></div></div>
+          <div class="mm-branch"><div class="mm-branch-line"></div><div class="mm-node">Overexploitation</div><div class="mm-leaves"><div class="mm-leaf">Fishing · Hunting · Poaching</div></div></div>
+          <div class="mm-branch"><div class="mm-branch-line"></div><div class="mm-node">Invasive Species</div><div class="mm-leaves"><div class="mm-leaf">Non-native disruption</div></div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════════════════════════════
+       MODULE 5 — SUSTAINABLE DEVELOPMENT GOALS
+  ════════════════════════════════════════════ -->
+  <section class="module" id="m5">
+    <div class="module-header">
+      <div class="module-num">05</div>
+      <div class="module-title-block">
+        <div class="module-tag">Module 5</div>
+        <div class="module-title">Sustainable Development Goals (SDGs)</div>
+      </div>
+    </div>
+
+    <div class="definition">
+      <p>The SDGs are a set of 17 global goals adopted by the United Nations (UN) in 2015 under the 2030 Agenda for Sustainable Development.</p>
+    </div>
+
+    <div class="grid-3" style="margin-top:16px;">
+      <div class="exam-box"><div class="label">Universal</div><p>Applicable to all countries globally.</p></div>
+      <div class="exam-box"><div class="label">Integrated</div><p>All goals are interconnected.</p></div>
+      <div class="exam-box"><div class="label">Background</div><p>Replaced the earlier Millennium Development Goals (MDGs).</p></div>
+    </div>
+
+    <!-- 17 SDGs -->
+    <div class="section-heading" id="17-sdgs">The 17 SDGs</div>
+    <div class="sdg-grid">
+      <div class="sdg-item"><div class="sdg-num">1</div><div class="sdg-name">No Poverty</div></div>
+      <div class="sdg-item"><div class="sdg-num">2</div><div class="sdg-name">Zero Hunger</div></div>
+      <div class="sdg-item"><div class="sdg-num">3</div><div class="sdg-name">Good Health and Well-being</div></div>
+      <div class="sdg-item"><div class="sdg-num">4</div><div class="sdg-name">Quality Education</div></div>
+      <div class="sdg-item"><div class="sdg-num">5</div><div class="sdg-name">Gender Equality</div></div>
+      <div class="sdg-item"><div class="sdg-num">6</div><div class="sdg-name">Clean Water and Sanitation</div></div>
+      <div class="sdg-item"><div class="sdg-num">7</div><div class="sdg-name">Affordable and Clean Energy</div></div>
+      <div class="sdg-item"><div class="sdg-num">8</div><div class="sdg-name">Decent Work and Economic Growth</div></div>
+      <div class="sdg-item"><div class="sdg-num">9</div><div class="sdg-name">Industry, Innovation and Infrastructure</div></div>
+      <div class="sdg-item"><div class="sdg-num">10</div><div class="sdg-name">Reduced Inequalities</div></div>
+      <div class="sdg-item"><div class="sdg-num">11</div><div class="sdg-name">Sustainable Cities and Communities</div></div>
+      <div class="sdg-item"><div class="sdg-num">12</div><div class="sdg-name">Responsible Consumption and Production</div></div>
+      <div class="sdg-item"><div class="sdg-num">13</div><div class="sdg-name">Climate Action</div></div>
+      <div class="sdg-item"><div class="sdg-num">14</div><div class="sdg-name">Life Below Water</div></div>
+      <div class="sdg-item"><div class="sdg-num">15</div><div class="sdg-name">Life on Land</div></div>
+      <div class="sdg-item"><div class="sdg-num">16</div><div class="sdg-name">Peace, Justice and Strong Institutions</div></div>
+      <div class="sdg-item"><div class="sdg-num">17</div><div class="sdg-name">Partnerships for the Goals</div></div>
+    </div>
+
+    <div class="section-heading">Memory Trick — 5 P's</div>
+    <div class="grid-3">
+      <div class="card"><div class="card-title"><span class="dot"></span>People</div><p>SDG 1–5: Poverty, Hunger, Health, Education, Gender Equality, Water</p></div>
+      <div class="card"><div class="card-title"><span class="dot"></span>Planet</div><p>SDG 13–15: Climate Action, Life Below Water, Life on Land</p></div>
+      <div class="card"><div class="card-title"><span class="dot"></span>Prosperity</div><p>SDG 7–11: Energy, Growth, Industry, Inequalities, Sustainable Cities, Responsible Consumption</p></div>
+      <div class="card"><div class="card-title"><span class="dot"></span>Peace</div><p>SDG 16: Peace, Justice and Strong Institutions</p></div>
+      <div class="card"><div class="card-title"><span class="dot"></span>Partnership</div><p>SDG 17: Partnerships for the Goals</p></div>
+    </div>
+
+    <!-- Mind Map SDGs -->
+    <div class="mindmap-wrapper">
+      <div class="mindmap-title">Mind Map — SDGs</div>
+      <div class="mindmap">
+        <div class="mm-center">SDGs (2030 Agenda)</div>
+        <div class="mm-connector"></div>
+        <div class="mm-branches">
+          <div class="mm-branch">
+            <div class="mm-branch-line"></div>
+            <div class="mm-node">People</div>
+            <div class="mm-leaves">
+              <div class="mm-leaf">No Poverty</div>
+              <div class="mm-leaf">Zero Hunger</div>
+              <div class="mm-leaf">Good Health</div>
+              <div class="mm-leaf">Quality Education</div>
+              <div class="mm-leaf">Gender Equality</div>
+            </div>
+          </div>
+          <div class="mm-branch">
+            <div class="mm-branch-line"></div>
+            <div class="mm-node">Planet</div>
+            <div class="mm-leaves">
+              <div class="mm-leaf">Climate Action</div>
+              <div class="mm-leaf">Life Below Water</div>
+              <div class="mm-leaf">Life on Land</div>
+            </div>
+          </div>
+          <div class="mm-branch">
+            <div class="mm-branch-line"></div>
+            <div class="mm-node">Prosperity</div>
+            <div class="mm-leaves">
+              <div class="mm-leaf">Clean Energy</div>
+              <div class="mm-leaf">Economic Growth</div>
+              <div class="mm-leaf">Sustainable Cities</div>
+            </div>
+          </div>
+          <div class="mm-branch">
+            <div class="mm-branch-line"></div>
+            <div class="mm-node">Peace</div>
+            <div class="mm-leaves"><div class="mm-leaf">Peace & Justice</div></div>
+          </div>
+          <div class="mm-branch">
+            <div class="mm-branch-line"></div>
+            <div class="mm-node">Partnership</div>
+            <div class="mm-leaves"><div class="mm-leaf">Global Cooperation</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Goal-Based Development -->
+    <div class="section-heading">Goal-Based Development</div>
+    <div class="definition">
+      <p>Development planned and implemented based on specific goals, targets, and measurable outcomes.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><span class="dot"></span>Goal-Based Development Cycle</div>
+      <div class="cycle" style="margin:16px auto;">
+        <div class="cycle-node">Goal</div>
+        <div class="cycle-arrow">↓</div>
+        <div class="cycle-node">Planning</div>
+        <div class="cycle-arrow">↓</div>
+        <div class="cycle-node">Implementation</div>
+        <div class="cycle-arrow">↓</div>
+        <div class="cycle-node">Monitoring</div>
+        <div class="cycle-arrow">↓</div>
+        <div class="cycle-node">Evaluation</div>
+        <div class="cycle-arrow">↓</div>
+        <div class="cycle-node">Improvement</div>
+      </div>
+    </div>
+
+    <div class="section-heading" style="font-size:15px;">Features of Goal-Based Development</div>
+    <div class="grid-2">
+      <div class="card">
+        <ul class="check-list">
+          <li><strong>Clear Objectives:</strong> Specific goals defined before implementation</li>
+          <li><strong>Time-Bound Action Plans:</strong> Fixed timeline for completion</li>
+          <li><strong>Measurable Indicators:</strong> Progress monitored using data</li>
+        </ul>
+      </div>
+      <div class="card">
+        <ul class="check-list">
+          <li><strong>Accountability:</strong> Authorities responsible for outcomes</li>
+          <li><strong>Monitoring & Evaluation:</strong> Continuous assessment of progress</li>
+        </ul>
+        <div class="exam-box" style="margin-top:10px;"><div class="label">Example Indicator</div><p>Percentage of population with access to clean water.</p></div>
+      </div>
+    </div>
+
+    <!-- Financing -->
+    <div class="section-heading">Financing for Sustainable Development</div>
+    <div class="card" style="margin-bottom:16px;">
+      <div class="card-title"><span class="dot"></span>Sources of Finance</div>
+      <table class="data-table">
+        <thead><tr><th>Source</th><th>Description</th><th>Example</th></tr></thead>
+        <tbody>
+          <tr><td>Government Funding</td><td>Taxes, Budgets, Subsidies</td><td>Government-funded solar projects</td></tr>
+          <tr><td>Private Sector</td><td>Companies, Industries, CSR</td><td>Corporate environmental projects</td></tr>
+          <tr><td>FDI</td><td>Foreign company investment in a country</td><td>Capital inflow + Technology transfer</td></tr>
+          <tr><td>International Aid</td><td>UN, World Bank, IMF grants</td><td>World Bank development grants</td></tr>
+          <tr><td>PPP</td><td>Government + Private sector joint collaboration</td><td>Metro rail projects</td></tr>
+          <tr><td>Green Bonds</td><td>Funding for renewable energy & climate</td><td>Solar energy projects</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Challenges in Financing</div>
+        <ul class="problem-list">
+          <li>Lack of funds</li>
+          <li>Corruption</li>
+          <li>Resource inequality</li>
+          <li>High project costs</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Solutions</div>
+        <ul class="check-list">
+          <li>Efficient taxation</li>
+          <li>Transparency</li>
+          <li>Green investments</li>
+          <li>International cooperation</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Good Governance -->
+    <div class="section-heading" id="governance">Principles of Good Governance</div>
+    <div class="definition">
+      <p>Good Governance is the effective management of public affairs and resources for the welfare of society.</p>
+    </div>
+
+    <div class="exam-box" style="margin:12px 0;"><div class="label">Memory Trick</div><p><strong>PTA-RREEC</strong> — Participation · Transparency · Accountability · Rule of Law · Responsiveness · Equity & Inclusiveness · Effectiveness & Efficiency · Consensus-Oriented</p></div>
+
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>1. Participation</div>
+        <p>Citizens participate in decision-making.</p>
+        <div class="exam-box" style="margin-top:8px;"><div class="label">Example</div><p>Public consultation before city development projects.</p></div>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>2. Transparency</div>
+        <p>Government decisions must be open and clear.</p>
+        <div class="exam-box" style="margin-top:8px;"><div class="label">Example</div><p>Publishing budget information publicly.</p></div>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>3. Accountability</div>
+        <p>Officials must answer for their actions.</p>
+        <div class="exam-box" style="margin-top:8px;"><div class="label">Example</div><p>Audits and performance reviews.</p></div>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>4. Rule of Law</div>
+        <p>Laws must be fairly applied to everyone.</p>
+        <div class="exam-box" style="margin-top:8px;"><div class="label">Example</div><p>Equal legal treatment of all citizens.</p></div>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>5. Responsiveness</div>
+        <p>Institutions must respond quickly to public needs.</p>
+        <div class="exam-box" style="margin-top:8px;"><div class="label">Example</div><p>Emergency services.</p></div>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>6. Equity & Inclusiveness</div>
+        <p>Equal opportunities for all.</p>
+        <div class="exam-box" style="margin-top:8px;"><div class="label">Example</div><p>Accessible education and healthcare.</p></div>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>7. Effectiveness & Efficiency</div>
+        <p>Maximum output with minimum resource wastage.</p>
+        <div class="exam-box" style="margin-top:8px;"><div class="label">Example</div><p>Digital governance reducing paperwork.</p></div>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>8. Consensus-Oriented</div>
+        <p>Decisions should consider different viewpoints.</p>
+        <div class="exam-box" style="margin-top:8px;"><div class="label">Example</div><p>Stakeholder discussions before major policies.</p></div>
+      </div>
+    </div>
+
+    <!-- Mind Map Governance -->
+    <div class="mindmap-wrapper">
+      <div class="mindmap-title">Mind Map — Good Governance</div>
+      <div class="mindmap">
+        <div class="mm-center">GOOD GOVERNANCE</div>
+        <div class="mm-connector"></div>
+        <div class="mm-branches">
+          <div class="mm-branch"><div class="mm-branch-line"></div><div class="mm-node">P — Participation</div></div>
+          <div class="mm-branch"><div class="mm-branch-line"></div><div class="mm-node">T — Transparency</div></div>
+          <div class="mm-branch"><div class="mm-branch-line"></div><div class="mm-node">A — Accountability</div></div>
+          <div class="mm-branch"><div class="mm-branch-line"></div><div class="mm-node">R — Rule of Law</div></div>
+          <div class="mm-branch"><div class="mm-branch-line"></div><div class="mm-node">R — Responsiveness</div></div>
+          <div class="mm-branch"><div class="mm-branch-line"></div><div class="mm-node">E — Equity</div></div>
+          <div class="mm-branch"><div class="mm-branch-line"></div><div class="mm-node">E — Efficiency</div></div>
+          <div class="mm-branch"><div class="mm-branch-line"></div><div class="mm-node">C — Consensus</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Feasibility -->
+    <div class="section-heading">Feasibility of Sustainable Development</div>
+    <div class="definition">
+      <p>Whether sustainable development can be practically achieved using available resources, technology, policies, and public support.</p>
+    </div>
+
+    <div class="grid-3">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Economic Feasibility</div>
+        <p>Availability of funds and affordability.</p>
+        <div class="exam-box" style="margin-top:8px;"><div class="label">Example</div><p>Solar projects require initial investment.</p></div>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Technical Feasibility</div>
+        <p>Availability of technology and skilled workforce.</p>
+        <div class="exam-box" style="margin-top:8px;"><div class="label">Example</div><p>Smart city requires IoT and AI technologies.</p></div>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Environmental Feasibility</div>
+        <p>Project should protect natural resources.</p>
+        <div class="exam-box" style="margin-top:8px;"><div class="label">Example</div><p>Renewable energy projects.</p></div>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Social Feasibility</div>
+        <p>Public acceptance and societal benefits.</p>
+        <div class="exam-box" style="margin-top:8px;"><div class="label">Example</div><p>Community participation in waste segregation.</p></div>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Political Feasibility</div>
+        <p>Government support and stable policies.</p>
+        <div class="exam-box" style="margin-top:8px;"><div class="label">Example</div><p>Climate action policies.</p></div>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="dot"></span>Practical Examples</div>
+        <ul class="check-list">
+          <li>Solar Energy — feasible where sunlight is abundant</li>
+          <li>Rainwater Harvesting — feasible in urban and rural areas</li>
+          <li>Waste Segregation — feasible with awareness</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Mind Map Feasibility -->
+    <div class="mindmap-wrapper">
+      <div class="mindmap-title">Mind Map — Feasibility</div>
+      <div class="mindmap">
+        <div class="mm-center">FEASIBILITY</div>
+        <div class="mm-connector"></div>
+        <div class="mm-branches">
+          <div class="mm-branch"><div class="mm-branch-line"></div><div class="mm-node">Economic</div><div class="mm-leaves"><div class="mm-leaf">Funds · Affordability</div></div></div>
+          <div class="mm-branch"><div class="mm-branch-line"></div><div class="mm-node">Technical</div><div class="mm-leaves"><div class="mm-leaf">Technology · Skills</div></div></div>
+          <div class="mm-branch"><div class="mm-branch-line"></div><div class="mm-node">Environmental</div><div class="mm-leaves"><div class="mm-leaf">Resource protection</div></div></div>
+          <div class="mm-branch"><div class="mm-branch-line"></div><div class="mm-node">Social</div><div class="mm-leaves"><div class="mm-leaf">Public acceptance</div></div></div>
+          <div class="mm-branch"><div class="mm-branch-line"></div><div class="mm-node">Political</div><div class="mm-leaves"><div class="mm-leaf">Government support</div></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quick Revision -->
+    <div class="section-heading">⚡ Last Minute Revision</div>
+    <div class="revision-grid">
+      <div class="revision-item"><div class="r-label">Sustainable Development</div><p>Meets present needs without harming future generations. (Brundtland, 1987)</p></div>
+      <div class="revision-item"><div class="r-label">Three Pillars</div><p>Environmental · Economic · Social</p></div>
+      <div class="revision-item"><div class="r-label">Circular Economy</div><p>Take → Make → Use → Repair → Reuse → Recycle</p></div>
+      <div class="revision-item"><div class="r-label">Mitigation vs Adaptation</div><p>Mitigation = Reduce Causes | Adaptation = Reduce Impacts</p></div>
+      <div class="revision-item"><div class="r-label">Greenhouse Effect</div><p>GHGs trap heat → Earth warmer → Enhanced = Climate Change</p></div>
+      <div class="revision-item"><div class="r-label">Biodiversity Levels</div><p>Genetic · Species · Ecosystem</p></div>
+      <div class="revision-item"><div class="r-label">SDGs</div><p>17 goals by UN in 2015 under 2030 Agenda</p></div>
+      <div class="revision-item"><div class="r-label">Good Governance</div><p>PTA-RREEC — 8 principles</p></div>
+      <div class="revision-item"><div class="r-label">Paris Agreement</div><p>Limit warming to well below 2°C, preferably 1.5°C</p></div>
+      <div class="revision-item"><div class="r-label">Smart Infrastructure</div><p>Sensors + IoT + AI + Data Analytics + Automation</p></div>
+    </div>
+
+  </section>
+
+</main>
+
+<a class="back-top" href="#" title="Back to top">↑ TOP</a>
+
+<script>
+  // Progress bar
+  const pbar = document.getElementById('pbar');
+  window.addEventListener('scroll', () => {
+    const h = document.documentElement;
+    const pct = h.scrollTop / (h.scrollHeight - h.clientHeight);
+    pbar.style.transform = `scaleX(${pct})`;
+  });
+
+  // Active nav
+  const navItems = document.querySelectorAll('.nav-item');
+  const sections = document.querySelectorAll('.module, section[id]');
+
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        navItems.forEach(n => n.classList.remove('active'));
+        const id = e.target.id;
+        const link = document.querySelector(`.nav-item[href="#${id}"]`);
+        if (link) link.classList.add('active');
+      }
+    });
+  }, { threshold: 0.2 });
+
+  sections.forEach(s => obs.observe(s));
+</script>
+
+</body>
+</html>
